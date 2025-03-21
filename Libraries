@@ -1,0 +1,40 @@
+Let us understand the meaning of each libaries,
+
+Streamlit: 
+Its a Front-end interface.
+Purpose: A framework for building interactive web apps for machine learning and data science.
+Why it's used?
+Allows you to quickly create user-friendly interfaces without web development skills.
+Provides interactive widgets like buttons, sliders, file uploads, and charts.
+Lets you deploy ML models as web apps with minimal effort.
+
+
+Pandas: 
+Data handling.
+Purpose: A powerful data analysis and manipulation library.
+Why it's used?
+Helps read, clean, and process structured data (Excel, CSV, etc.).
+Provides easy-to-use functions for data filtering and transformation.
+
+NumPy: 
+Efficient numerical operations.
+Purpose: A fundamental package for numerical computing in Python.
+Why it's used?
+Handles arrays and matrices efficiently.
+Supports complex mathematical operations required in ML models.
+
+
+Scikit-learn: 
+Model training & prediction.
+Purpose: A machine learning library that provides tools for data preprocessing, model training, and evaluation.
+Why it's used?
+Provides algorithms for classification, regression, and clustering.
+Includes utilities for model saving/loading (pickle).
+Helps in evaluating model performance.
+
+Matplotlib: 
+Data visualization.
+Purpose: A data visualization library for creating static, animated, and interactive plots.
+Why it's used?
+Helps visualize trends in financial data.
+Supports histogram, scatter plots, bar charts, etc.
