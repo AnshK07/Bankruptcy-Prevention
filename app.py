@@ -1,34 +1,29 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 import pandas as pd
-
+import requests
+import pickle
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+import streamlit as st
 
 # Load dataset from GitHub
 file_url = "https://raw.githubusercontent.com/AnshK07/Bankruptcy-Prevention/main/Bankruptcy.xlsx"
 
 try:
-    df = pd.read_excel(file_url)
+    # Download the file
+    response = requests.get(file_url)
+    with open("Bankruptcy.xlsx", "wb") as file:
+        file.write(response.content)
+    
+    # Read the file into a DataFrame
+    df = pd.read_excel("Bankruptcy.xlsx")
     print("Dataset loaded successfully!")
     print(df.head())  # Display first few rows
 except Exception as e:
     print(f"Error loading dataset: {e}")
-
-# Check sheet names
-xls.sheet_names
-
-
-# In[2]:
-
-
-import pickle
-import numpy as np
-import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
 
 # Sample dataset
 data = pd.DataFrame({
@@ -57,18 +52,6 @@ with open("bankruptcy_model.pkl", "wb") as file:
 
 print("Model saved successfully!")
 
-
-# In[4]:
-
-
-import streamlit as st
-import pickle
-import numpy as np
-
-# Load the trained model
-with open("bankruptcy_model.pkl", "rb") as file:
-    model = pickle.load(file)
-
 # Streamlit UI
 st.title("Bankruptcy Prediction App")
 st.write("Enter company risk factors to predict bankruptcy:")
@@ -84,24 +67,16 @@ operating_risk = st.selectbox("Operating Risk", [0, 1])
 # Predict button
 if st.button("Predict Bankruptcy"):
     # Prepare input data
-    data = np.array([[industrial_risk, management_risk, financial_flexibility, credibility, competitiveness, operating_risk]])
-    prediction = model.predict(data)[0]
+    input_data = np.array([[industrial_risk, management_risk, financial_flexibility, credibility, competitiveness, operating_risk]])
+    
+    # Load trained model
+    with open("bankruptcy_model.pkl", "rb") as file:
+        model = pickle.load(file)
+    
+    prediction = model.predict(input_data)[0]
 
     # Show result
     if prediction == 1:
         st.error("⚠️ High Risk of Bankruptcy!")
     else:
         st.success("✅ Low Risk of Bankruptcy")
-
-
-# In[ ]:
-
-
-get_ipython().system('streamlit run app.py')
-
-
-# In[ ]:
-
-
-
-
