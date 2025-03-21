@@ -6,9 +6,16 @@
 
 import pandas as pd
 
-# Load the dataset
-file_path = "C:/Users/HP/Bankruptcy.xlsx"
-xls = pd.ExcelFile(file_path)
+
+# Load dataset from GitHub
+file_url = "https://raw.githubusercontent.com/AnshK07/Bankruptcy-Prevention/main/Bankruptcy (2).xlsx"
+
+try:
+    df = pd.read_excel(file_url)
+    print("Dataset loaded successfully!")
+    print(df.head())  # Display first few rows
+except Exception as e:
+    print(f"Error loading dataset: {e}")
 
 # Check sheet names
 xls.sheet_names
