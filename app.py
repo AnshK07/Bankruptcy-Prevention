@@ -40,21 +40,3 @@ if st.button("🔍 Predict Bankruptcy"):
     else:
         st.success(f"✅ Low Risk of Bankruptcy (Risk: {probability*100:.2f}%)")
 
-# File Upload for Batch Prediction
-st.markdown("### 📂 Upload CSV for Batch Prediction")
-file = st.file_uploader("Upload a CSV file with the same columns", type=["csv"])
-
-if file:
-    df = pd.read_csv(file)
-    predictions = model.predict(df)
-    probabilities = model.predict_proba(df)[:, 1]  # Get bankruptcy probabilities
-    
-    df["Bankruptcy Prediction"] = ["High Risk" if pred == 1 else "Low Risk" for pred in predictions]
-    df["Risk Probability (%)"] = probabilities * 100
-    
-    st.write("### 📊 Prediction Results")
-    st.dataframe(df)
-    
-    # Option to download the results
-    csv = df.to_csv(index=False).encode('utf-8')
-    st.download_button("📥 Download Predictions", csv, "bankruptcy_predictions.csv", "text/csv")
