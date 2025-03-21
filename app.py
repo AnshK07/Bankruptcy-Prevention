@@ -8,7 +8,7 @@ import pandas as pd
 
 
 # Load dataset from GitHub
-file_url = "https://raw.githubusercontent.com/AnshK07/Bankruptcy-Prevention/main/Bankruptcy (2).xlsx"
+file_url = "https://raw.githubusercontent.com/AnshK07/Bankruptcy-Prevention/main/Bankruptcy.xlsx"
 
 try:
     df = pd.read_excel(file_url)
