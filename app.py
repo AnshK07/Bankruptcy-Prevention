@@ -1,82 +1,60 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-import pandas as pd
-import requests
+import streamlit as st
 import pickle
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-import streamlit as st
+import pandas as pd
 
-# Load dataset from GitHub
-file_url = "https://raw.githubusercontent.com/AnshK07/Bankruptcy-Prevention/main/Bankruptcy.xlsx"
-
-try:
-    # Download the file
-    response = requests.get(file_url)
-    with open("Bankruptcy.xlsx", "wb") as file:
-        file.write(response.content)
-    
-    # Read the file into a DataFrame
-    df = pd.read_excel("Bankruptcy.xlsx")
-    print("Dataset loaded successfully!")
-    print(df.head())  # Display first few rows
-except Exception as e:
-    print(f"Error loading dataset: {e}")
-
-# Sample dataset
-data = pd.DataFrame({
-    'industrial_risk': [0, 1, 0, 1, 0],
-    'management_risk': [1, 0, 1, 1, 0],
-    'financial_flexibility': [0, 1, 1, 0, 1],
-    'credibility': [1, 0, 0, 1, 1],
-    'competitiveness': [0, 1, 0, 1, 1],
-    'operating_risk': [1, 0, 1, 0, 0],
-    'bankruptcy': [1, 0, 1, 0, 0]
-})
-
-X = data.drop(columns=['bankruptcy'])
-y = data['bankruptcy']
-
-# Split data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Train model
-model = RandomForestClassifier(n_estimators=100, random_state=42)
-model.fit(X_train, y_train)
-
-# Save the model
-with open("bankruptcy_model.pkl", "wb") as file:
-    pickle.dump(model, file)
-
-print("Model saved successfully!")
+# Load the trained model
+with open("bankruptcy_model.pkl", "rb") as file:
+    model = pickle.load(file)
 
 # Streamlit UI
-st.title("Bankruptcy Prediction App")
+st.title("🏢 Bankruptcy Prediction App")
 st.write("Enter company risk factors to predict bankruptcy:")
 
-# Input fields
-industrial_risk = st.selectbox("Industrial Risk", [0, 1])
-management_risk = st.selectbox("Management Risk", [0, 1])
-financial_flexibility = st.selectbox("Financial Flexibility", [0, 1])
-credibility = st.selectbox("Credibility", [0, 1])
-competitiveness = st.selectbox("Competitiveness", [0, 1])
-operating_risk = st.selectbox("Operating Risk", [0, 1])
+# Layout for better UI
+col1, col2, col3 = st.columns(3)
+with col1:
+    industrial_risk = st.selectbox("Industrial Risk", [0, 1])
+    management_risk = st.selectbox("Management Risk", [0, 1])
+with col2:
+    financial_flexibility = st.selectbox("Financial Flexibility", [0, 1])
+    credibility = st.selectbox("Credibility", [0, 1])
+with col3:
+    competitiveness = st.selectbox("Competitiveness", [0, 1])
+    operating_risk = st.selectbox("Operating Risk", [0, 1])
+
+# Prediction function
+def predict_bankruptcy(features):
+    prediction = model.predict(features)[0]
+    probability = model.predict_proba(features)[0][1]  # Probability of bankruptcy
+    return prediction, probability
 
 # Predict button
-if st.button("Predict Bankruptcy"):
-    # Prepare input data
-    input_data = np.array([[industrial_risk, management_risk, financial_flexibility, credibility, competitiveness, operating_risk]])
+if st.button("🔍 Predict Bankruptcy"):
+    data = np.array([[industrial_risk, management_risk, financial_flexibility, credibility, competitiveness, operating_risk]])
+    prediction, probability = predict_bankruptcy(data)
     
-    # Load trained model
-    with open("bankruptcy_model.pkl", "rb") as file:
-        model = pickle.load(file)
-    
-    prediction = model.predict(input_data)[0]
-
     # Show result
     if prediction == 1:
-        st.error("⚠️ High Risk of Bankruptcy!")
+        st.error(f"⚠️ High Risk of Bankruptcy! (Risk: {probability*100:.2f}%)")
     else:
-        st.success("✅ Low Risk of Bankruptcy")
+        st.success(f"✅ Low Risk of Bankruptcy (Risk: {probability*100:.2f}%)")
+
+# File Upload for Batch Prediction
+st.markdown("### 📂 Upload CSV for Batch Prediction")
+file = st.file_uploader("Upload a CSV file with the same columns", type=["csv"])
+
+if file:
+    df = pd.read_csv(file)
+    predictions = model.predict(df)
+    probabilities = model.predict_proba(df)[:, 1]  # Get bankruptcy probabilities
+    
+    df["Bankruptcy Prediction"] = ["High Risk" if pred == 1 else "Low Risk" for pred in predictions]
+    df["Risk Probability (%)"] = probabilities * 100
+    
+    st.write("### 📊 Prediction Results")
+    st.dataframe(df)
+    
+    # Option to download the results
+    csv = df.to_csv(index=False).encode('utf-8')
+    st.download_button("📥 Download Predictions", csv, "bankruptcy_predictions.csv", "text/csv")
