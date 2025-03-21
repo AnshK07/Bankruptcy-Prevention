@@ -4,17 +4,17 @@ This Bankruptcy Prediction App is a machine learning-based web application that 
 
 🔹 Features-
 
-1.  Single Prediction: Enter company risk factors and get an instant bankruptcy risk assessment.
-2.  Probability Score: Displays the likelihood of bankruptcy as a percentage.
-3. Batch Prediction: Upload a CSV file with multiple company records for bulk risk assessment.
-4. User-Friendly UI: Interactive interface built with Streamlit.
+* Single Prediction: Enter company risk factors and get an instant bankruptcy risk assessment.
+* Probability Score: Displays the likelihood of bankruptcy as a percentage.
+* Batch Prediction: Upload a CSV file with multiple company records for bulk risk assessment.
+* User-Friendly UI: Interactive interface built with Streamlit.
 
 🔹 Technologies Used-
 
-Python (pandas, scikit-learn, numpy)
-Machine Learning Model: Random Forest Classifier
-Web Framework: Streamlit
-Deployment: Streamlit Cloud
+* Python (pandas, scikit-learn, numpy)
+* Machine Learning Model: Random Forest Classifier
+* Web Framework: Streamlit
+* Deployment: Streamlit Cloud
 
 🔹 How to Use-
 
